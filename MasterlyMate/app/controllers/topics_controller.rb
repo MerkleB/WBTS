@@ -1,6 +1,4 @@
 class TopicsController < ApplicationController
-
-  layout "frontend"
   # GET /wbts
   # GET /wbts.json
   def index
