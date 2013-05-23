@@ -46,11 +46,15 @@ modelInstance ||= nil
 		<div>
 			<% if topic.wbts.count > 0 %>
 				<h4><%= t("activerecord.models.wbtPlural") %></h4>
-				<% if current_user.assessments.include? topic %>
-					<% users_rank = topic.assessments.select("rank_id").where("user_id = ?", current_user.id).first %>
-					<%= render(partial: "wbts/wbts", locals: { assignedTopic: topic, collection: topic.wbts.where("rank_id <= ?", users_rank).order("name,difficulty") }) %>
+				<% if current_user.group? "Administrator" %>
+					<%= render(partial: "wbts/wbts", locals: { assignedTopic: topic, collection: topic.wbts.order("name,difficulty").all }) %>
 				<% else %>
-					<%= render(partial: "wbts/wbts", locals: { assignedTopic: topic, collection: topic.wbts.where("rank_id = 1").order("name,difficulty") }) %>
+					<% if current_user.assessments.where("topic_id = ?", topic.id).count > 0 %>
+						<% users_rank = topic.assessments.select("rank_id").where("user_id = ?", current_user.id).first.rank.id %>
+						<%= render(partial: "wbts/wbts", locals: { assignedTopic: topic, collection: topic.wbts.where("rank_id <= ?", users_rank).order("name,difficulty") }) %>
+					<% else %>
+						<%= render(partial: "wbts/wbts", locals: { assignedTopic: topic, collection: topic.wbts.where("rank_id = 1").order("name,difficulty") }) %>
+					<% end %>
 				<% end %>
 			<% end %>
 			<% if topic.topics.count > 0 %>
@@ -62,11 +66,15 @@ modelInstance ||= nil
 	</div>
 <% elsif !modelInstance.nil? %>
 	<h4><%= t("activerecord.models.wbtPlural") %></h4>
-	<% if current_user.assessments.include? modelInstance %>
-		<% users_rank = modelInstance.assessments.select("rank_id").where("user_id = ?", current_user.id).first %>
-		<%= render(partial: "wbts/wbts", locals: { assignedTopic: modelInstance, collection: modelInstance.wbts.where("rank_id <= ?", users_rank).order("name,difficulty") }) %>
+	<% if current_user.group? "Administrator" %>
+		<%= render(partial: "wbts/wbts", locals: { assignedTopic: modelInstance, collection: modelInstance.wbts.order("name,difficulty").all }) %>
 	<% else %>
-		<%= render(partial: "wbts/wbts", locals: { assignedTopic: modelInstance, collection: modelInstance.wbts.where("rank_id = 1").order("name,difficulty") }) %>
+		<% if current_user.assessments.where("topic_id = ?", modelInstance.id).count > 0 %>
+			<% users_rank = modelInstance.assessments.select("rank_id").where("user_id = ?", current_user.id).first.rank.id %>
+			<%= render(partial: "wbts/wbts", locals: { assignedTopic: modelInstance, collection: modelInstance.wbts.where("rank_id <= ?", users_rank).order("name,difficulty") }) %>
+		<% else %>
+			<%= render(partial: "wbts/wbts", locals: { assignedTopic: modelInstance, collection: modelInstance.wbts.where("rank_id = 1").order("name,difficulty") }) %>
+		<% end %>
 	<% end %>
 <% end %>
 

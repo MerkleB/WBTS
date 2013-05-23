@@ -41,10 +41,16 @@ mit Masterly Mate erhalten haben. Wenn nicht, siehe
 		<legend><%= current_user.username %></legend>
 		<table>
 			<tr>
+				<%
+					currentVal = current_user.reached_points?
+					if currentVal > current_user.available_points?
+						currentVal = current_user.available_points?
+					end
+				%>
 				<td><%= t("profile.statistic.wholePoints") %>:</td>
-				<td><%= current_user.reached_points? %></td>
+				<td><%= currentVal %></td>
 				<td>
-					<%= render partial: "shared/progressbar", locals: { currentValue: current_user.reached_points?, maxValue: current_user.available_points?, progressbarClass: "reached_points", small: true } %>
+					<%= render partial: "shared/progressbar", locals: { currentValue: currentVal, maxValue: current_user.available_points?, progressbarClass: "reached_points", small: true } %>
 				</td>
 			</tr>
 			<tr>

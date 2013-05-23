@@ -71,10 +71,8 @@ class User < ActiveRecord::Base
   # Returns the max number of possible points for this user
   def available_points?
     points = 0
-    self.assessments.each do |assessment|
-      assessment.topic.wbts.each do |wbt|
+    Wbt.all.each do |wbt|
         points += wbt.getDifficultyPoints
-      end
     end
     (points > 0) ? points : 1
   end

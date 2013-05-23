@@ -45,6 +45,7 @@ hideActions ||= false
 		<th><%= t("profile.statistic.points") %></th>
 		<th><%= t("activerecord.models.rank") %></th>
 		<th><%= t("activerecord.attributes.assessment.examCount") %></th>
+		<th><%= t("activerecord.attributes.assessment.pointsToNextLevel") %></th>
 		<% if current_user.group? "Administrator" %>
 		<th><%= t("activerecord.models.user") %></th>
 		<% end %>
@@ -62,6 +63,13 @@ hideActions ||= false
 			</td>
 			<td><%= t(assessment.rank.name) %></td>
 			<td><%= assessment.exams.count %></td>
+			<td>
+			<% if assessment.rank_id != 5 %>
+			<%= (assessment.available_points?.to_f / 5) * assessment.rank_id - assessment.points %>
+			<% else %>
+			-
+			<% end %>
+			</td>
 			<% if current_user.group? "Administrator" %>
 			<td><%= assessment.user.username %></td>
 			<% end %>

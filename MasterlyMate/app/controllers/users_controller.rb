@@ -189,6 +189,21 @@ class UsersController < ApplicationController
     end
     exam.save
     assessment.points = assessment.exams.sum("points")
+    
+    availablePoints = assessment.available_points?
+    percentedCompleted = (assessment.points.to_f / availablePoints) * 100
+    if percentedCompleted <= 20
+      assessment.rank_id = 1
+    elsif percentedCompleted <= 40
+      assessment.rank_id = 2
+    elsif percentedCompleted <= 60
+      assessment.rank_id = 3
+    elsif percentedCompleted <= 80
+      assessment.rank_id = 4
+    elsif percentedCompleted <= 100
+      assessment.rank_id = 5
+    end
+    
     assessment.save
     
     respond_to do |format|

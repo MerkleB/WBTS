@@ -48,8 +48,8 @@ class Assessment < ActiveRecord::Base
   # This method will return the whole number of possible points for this assessment.
   def available_points?
     availablePoints = 0
-    self.exams.each do |exam|
-      availablePoints += exam.wbt.getDifficultyPoints
+    Wbt.joins(:topics).where("topics_wbts.topic_id = ?", self.topic.id).each do |exam|
+      availablePoints += exam.getDifficultyPoints
     end
     availablePoints
   end
